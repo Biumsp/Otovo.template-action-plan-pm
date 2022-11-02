@@ -1,11 +1,6 @@
-// get the spreadsheet object and the sheet
-const ss = SpreadsheetApp.getActiveSpreadsheet();
-const calendarSheet = ss.getSheetByName('CALENDAR INSTALLERS');
-const projectsSheet = ss.getSheetByName('Main');
+let COLUMN_DATES;
 
-const COLUMN_DATES = 13;
-
-function allInstallerDates(inst) {
+function allInstallerDates(inst, calendarSheet) {
 
   let dates = calendarSheet.getDataRange().getValues();
   dates.shift();
@@ -26,27 +21,31 @@ function allInstallerDates(inst) {
   return installerDates;
 }
 
-function installerSelectedDates (inst) {
+function installerSelectedDates (inst, projectsSheet) {
 
   let installers = projectsSheet.getDataRange().getValues();
   installers.shift();
 
   let installerProjects = [];
   let selectedDates = [];
+  let projectsWithDate = [];
   installers.forEach((row, i) => {
 
     let installer = row[1];
     if (!installer || installer !== inst) return;
 
-    let date = row[12];
-    if (date) selectedDates.push(date);
-
-    installerProjects.push(i+2);
+    let date = row[COLUMN_DATES-1];
+    if (date) {
+      selectedDates.push(date);
+      projectsWithDate.push(i+2);
+    }
+    else installerProjects.push(i+2);
 
   });
 
   return {"selectedDates": selectedDates,
-          "installerProjects": installerProjects};
+          "installerProjects": installerProjects,
+          "projectsWithDate": projectsWithDate};
 
 }
 
@@ -58,12 +57,12 @@ function removeItemOnce(arr, value) {
   return arr;
 }
 
-function installerFreeDates(inst) {
+function installerFreeDates(inst, calendarSheet, projectsSheet) {
 
-  let allDates = allInstallerDates(inst);
+  let allDates = allInstallerDates(inst, calendarSheet);
   let allDatesStr = allDates.map(x => x.valueOf())
   
-  let tmp = installerSelectedDates(inst);
+  let tmp = installerSelectedDates(inst, projectsSheet);
   let selectedDates = tmp.selectedDates;
   let selectedDatesStr = selectedDates.map(x => x.valueOf())
   let installerProjects = tmp.installerProjects;
@@ -86,15 +85,22 @@ function installerFreeDates(inst) {
     }
   });
 
-  return {availableDates: availableDates, installerProjects: installerProjects};
+  return {availableDates: availableDates, installerProjects: installerProjects, projectsWithDate: tmp.projectsWithDate};
 
 }
 
-function updateDropdown(installer) {
+function updateDropdown(installer, calendarSheet, projectsSheet) {
 
-  const datesProjects = installerFreeDates(installer);
+  const datesProjects = installerFreeDates(installer, calendarSheet, projectsSheet);
   const dates    = datesProjects.availableDates;
   const projects = datesProjects.installerProjects;
+  const projectsWithDate = datesProjects.projectsWithDate;
+
+  console.log("Available dates: ", dates);
+  console.log("Blank projects rows: ", projects);
+  console.log('Projects with date: ', projectsWithDate);
+
+  if (!dates.length) return;
 
   for (i in projects) {
     projectsSheet.getRange(projects[i], COLUMN_DATES, 1, 1)
@@ -103,29 +109,11 @@ function updateDropdown(installer) {
     .requireValueInList(dates, true)
     .build());
   }
-}
-
-function onEdit(e) {
-
-  if (e.range.getSheet().getName() !== "Main" && e.range.getSheet().getName() !== "CALENDAR INSTALLERS") return;
-
-  var editRange = ss.getRangeByName("DateDropdown");
-
-  if (e.range.getSheet().getName() === "Main")
-  {
-    // Exit if we're out of range
-    var thisRow = e.range.getRow();
-    if (thisRow < editRange.top || thisRow > editRange.bottom) return;
-  
-    var thisCol = e.range.getColumn();
-    if (thisCol < editRange.left || thisCol > editRange.right) return;
-
-    var installer = projectsSheet.getRange(e.range.getRow(), 2, 1, 1).getValue();
+  for (i in projectsWithDate) {
+    projectsSheet.getRange(projectsWithDate[i], COLUMN_DATES, 1, 1)
+    .setDataValidation(SpreadsheetApp.newDataValidation()
+    .setAllowInvalid(true)
+    .requireValueInList(dates, true)
+    .build());
   }
-  else {
-    var installer = calendarSheet.getRange(e.range.getRow(), 1, 1, 1).getValue();
-  }
-
-  updateDropdown(installer);
 }
-

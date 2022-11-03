@@ -1,6 +1,11 @@
 const PRIMARY_KEY_NAME = "project_id";
 
 function archiveAllData() {
+  /*
+     Copies the values from all the ranges named "archive.name.sheet_name" 
+     to the corresponding columns "name" in the archive sheet associated to the
+     sheet_name (in settings)
+  */
   let ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheets = ss.getSheets();
 
@@ -111,6 +116,7 @@ sheet: ${error}`;
     return "error";
 
   } else {
+    record("last_push");
     return "Ok";
   }
 

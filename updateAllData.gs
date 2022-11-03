@@ -1,4 +1,8 @@
 function updateAllData() {
+  /*
+     Copies the values from all the ranges named "from.name" to the corresponding
+     ranges "to.name"
+  */
 
   let ss = SpreadsheetApp.getActiveSpreadsheet();
   let ranges = ss.getNamedRanges();
@@ -53,6 +57,8 @@ spreadsheet: ${ss.getUrl()}`;
     if (userEmail) GmailApp.sendEmail("enricobu@otovo.com", `Error in "${ss.getName()}"`, body, {cc: userEmail});
     else GmailApp.sendEmail("enricobu@otovo.com", `Error in ${ss.getName()}`, body); 
 
+  } else {
+    record("last_pull");
   }
 
 }

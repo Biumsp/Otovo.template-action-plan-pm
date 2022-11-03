@@ -19,7 +19,6 @@ function archiveAllData() {
         let fullName = nr.getName();
 
         if (fullName.startsWith("archive.") && fullName.endsWith("." + s.getName())) {
-
           let name = fullName.slice("archive.".length, fullName.length - s.getName().length - 1);
           valuesToArchive[name] = nr.getRange().getValues();
         }
@@ -39,7 +38,7 @@ function archiveAllData() {
       }
 
       let archivePKsValues = [];
-      for (let i = 0; i < archiveValues.length; i++) {
+      for (let i = 1; i < archiveValues.length; i++) {
         archivePKsValues.push(archiveValues[i][archiveRangesColumns[PRIMARY_KEY_NAME]-1]);
       }
 
@@ -95,7 +94,7 @@ function archiveAllData() {
     let [userName, userEmail] = getUserData(ss);
 
     let body = `Hi Enrico, 
-it's me again, with another error!.
+it's me again, with another error!
 We have an issue in archiveAllData, probably a missing permission or a corrupted ID.
 I know ${userName} is already on it, but maybe you should check, just in case ;)
 Have fun,

@@ -1,3 +1,5 @@
+const PRIMARY_KEY_NAME = "project_id";
+
 function archiveAllData() {
   let ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheets = ss.getSheets();
@@ -10,7 +12,6 @@ function archiveAllData() {
       if (!archiveID) return;
 
       let namedRanges = ss.getNamedRanges();
-      let rangesToArchive = {};
       let valuesToArchive = {};
 
       namedRanges.forEach(nr => {
@@ -20,26 +21,27 @@ function archiveAllData() {
         if (fullName.startsWith("archive.") && fullName.endsWith("." + s.getName())) {
 
           let name = fullName.slice("archive.".length, fullName.length - s.getName().length - 1);
-
-          rangesToArchive[name] = nr.getRange();
           valuesToArchive[name] = nr.getRange().getValues();
         }
 
       })
 
-      if (!rangesToArchive.primary_key) return;
+      if (!valuesToArchive.primary_key) return;
 
       let archiveSpreadsheet = SpreadsheetApp.openById(archiveID);
       let archiveSheet = archiveSpreadsheet.getSheets()[0];
       let archiveValues = archiveSheet.getDataRange().getValues();
       let archiveRangesColumns = {};
 
-      archiveSpreadsheet.getNamedRanges().forEach(nr => {
-        archiveRangesColumns[nr.getName()] = nr.getRange().getColumn();
-      })
+      let headers = archiveValues[0];
+      for (let i = 0; i <headers.length; i++) {
+        archiveRangesColumns[headers[i]] = i+1;
+      }
 
-      let archivePKsRange = archiveSpreadsheet.getRangeByName("primary_key");
-      let archivePKsValuesRaw = archivePKsRange.getValues();
+      let archivePKsValues = [];
+      for (let i = 0; i < archiveValues.length; i++) {
+        archivePKsValues.push(archiveValues[i][archiveRangesColumns[PRIMARY_KEY_NAME]]);
+      }
 
       for (let i=0; i < valuesToArchive.primary_key.length; i++) {
 
@@ -47,18 +49,22 @@ function archiveAllData() {
         if (!pk) continue;
 
         let pkRow = -1;
-        for (let i = 0; i < archivePKsValuesRaw.length; i++) {
+        for (let i = 0; i < archivePKsValues.length; i++) {
 
-          if (archivePKsValuesRaw[i][0] === pk) {
+          if (archivePKsValues[i] === pk) {
             pkRow = i+1; // Il range parte dalla riga 2
             break;
           }
+
         }
 
         let newLine = [];
 
-        for (rangeName in rangesToArchive) {
+        for (rangeName in valuesToArchive) {
           let col = archiveRangesColumns[rangeName];
+          if (rangeName === "primary_key") {
+            col = archiveRangesColumns[PRIMARY_KEY_NAME];
+          }
           newLine[col-1] = valuesToArchive[rangeName][i][0];
         }
 

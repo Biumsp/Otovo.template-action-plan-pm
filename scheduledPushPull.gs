@@ -1,5 +1,8 @@
 function scheduledPushPull() {
   let resultOfPush = push();
-  if (resultOfPush !== "Ok") return;
-  pull();
+  if (resultOfPush !== "Ok") {
+    console.log("Failed to push");
+    return;
+  }
+  updateAllData();
 }

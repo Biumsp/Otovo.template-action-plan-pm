@@ -10,7 +10,7 @@ function authUpdateAllData() {
 
   var result = ui.alert(
      'Please confirm',
-     'Are you sure you want to continue? This will override the data in main',
+     'Are you sure you want to continue? This will override the data in the sheets.',
       ui.ButtonSet.YES_NO);
 
   // Process the user's response.

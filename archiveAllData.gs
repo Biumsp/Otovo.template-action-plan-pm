@@ -40,7 +40,7 @@ function archiveAllData() {
 
       let archivePKsValues = [];
       for (let i = 0; i < archiveValues.length; i++) {
-        archivePKsValues.push(archiveValues[i][archiveRangesColumns[PRIMARY_KEY_NAME]]);
+        archivePKsValues.push(archiveValues[i][archiveRangesColumns[PRIMARY_KEY_NAME]-1]);
       }
 
       for (let i=0; i < valuesToArchive.primary_key.length; i++) {

@@ -17,6 +17,12 @@
     }, {
       "menuName": "Untitled Macro 1",
       "functionName": "UntitledMacro1"
+    }, {
+      "menuName": "Untitled Macro",
+      "functionName": "UntitledMacro"
+    }, {
+      "menuName": "Untitled Macro",
+      "functionName": "UntitledMacro"
     }]
   }
 }

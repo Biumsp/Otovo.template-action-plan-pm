@@ -59,6 +59,7 @@ spreadsheet: ${ss.getUrl()}`;
 
   } else {
     record("last_pull");
+    updateAllDropdowns();
   }
 
 }

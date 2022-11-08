@@ -1,11 +1,11 @@
 function pull() {
-  let userEmail = Session.getActiveUser().getEmail();
+  //let userEmail = Session.getActiveUser().getEmail();
   var ui = SpreadsheetApp.getUi();
 
-  if (userEmail !== "enricobu@otovo.com") {
+  /*if (userEmail !== "enricobu@otovo.com") {
     ui.alert("You are not authorized to pull");
     return;
-  }
+  }*/
 
   var result = ui.alert(
      'Please confirm',

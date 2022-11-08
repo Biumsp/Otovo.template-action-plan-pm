@@ -1,7 +1,11 @@
+let COLUMN_DATES;
+
 function updateAllDropdowns() {
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
+  clearAllDropdowns(ss);
+  
   let calendarSheet = ss.getSheetByName('calendar_installers');
   let projectsSheet = ss.getSheetByName('main');
   
@@ -23,7 +27,9 @@ function updateAllDropdowns() {
 
 }
 
-let COLUMN_DATES;
+function clearAllDropdowns(ss) {
+  ss.getRangeByName("red_dates").setDataValidation(null);
+}
 
 function allInstallerDates(inst, calendarSheet) {
 

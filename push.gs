@@ -1,3 +1,0 @@
-function push() {
-  return archiveAllData();
-}

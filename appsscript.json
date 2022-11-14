@@ -1,28 +1,38 @@
 {
   "timeZone": "Europe/Rome",
-  "dependencies": {
-  },
+  "dependencies": {},
   "exceptionLogging": "STACKDRIVER",
   "runtimeVersion": "V8",
   "sheets": {
-    "macros": [{
-      "menuName": "refresh",
-      "functionName": "refresh"
-    }, {
-      "menuName": "Untitled Macro",
-      "functionName": "UntitledMacro"
-    }, {
-      "menuName": "Untitled Macro",
-      "functionName": "UntitledMacro"
-    }, {
-      "menuName": "Untitled Macro 1",
-      "functionName": "UntitledMacro1"
-    }, {
-      "menuName": "Untitled Macro",
-      "functionName": "UntitledMacro"
-    }, {
-      "menuName": "Untitled Macro",
-      "functionName": "UntitledMacro"
-    }]
+    "macros": [
+      {
+        "menuName": "refresh",
+        "functionName": "refresh"
+      },
+      {
+        "menuName": "Untitled Macro",
+        "functionName": "UntitledMacro"
+      },
+      {
+        "menuName": "Untitled Macro",
+        "functionName": "UntitledMacro"
+      },
+      {
+        "menuName": "Untitled Macro 1",
+        "functionName": "UntitledMacro1"
+      },
+      {
+        "menuName": "Untitled Macro",
+        "functionName": "UntitledMacro"
+      },
+      {
+        "menuName": "Untitled Macro",
+        "functionName": "UntitledMacro"
+      }
+    ]
+  },
+  "webapp": {
+    "executeAs": "USER_DEPLOYING",
+    "access": "DOMAIN"
   }
 }

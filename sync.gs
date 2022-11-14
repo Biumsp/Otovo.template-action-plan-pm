@@ -1,11 +1,11 @@
-function pull() {
-  //let userEmail = Session.getActiveUser().getEmail();
+function sync() {
+  let userEmail = Session.getActiveUser().getEmail();
   var ui = SpreadsheetApp.getUi();
 
-  /*if (userEmail !== "enricobu@otovo.com") {
+  if (userEmail !== "enricobu@otovo.com") {
     ui.alert("You are not authorized to pull");
     return;
-  }*/
+  }
 
   var result = ui.alert(
      'Please confirm',
@@ -13,6 +13,7 @@ function pull() {
       ui.ButtonSet.YES_NO);
 
   if (result == ui.Button.YES) {
+    localBackup();
     updateAllData();
   } else {
     ui.alert('Ok', 'fine', ui.ButtonSet.OK);
@@ -29,28 +30,21 @@ function updateAllData() {
   let ranges = ss.getNamedRanges();
   
   let error;
-  ranges.forEach(r0 => {
-    let name = r0.getName();
-
+  ranges.forEach(inputRange => {
+    let name = inputRange.getName();
+    
     if (name.startsWith("from.")) {
       name = name.slice("from.".length);
 
-      ranges.forEach(r1 => {
+      try {
 
-        if (r1.getName() === `to.${name}`) {
+        let outputRange = ss.getRangeByName("to." + name);
+        console.log("Copy values from", name);
+        outputRange.setValues(inputRange.getRange().getValues());
 
-          console.log("Copy values from", name)
-
-          let values = r0.getRange().getValues();
-          try {
-            r1.getRange().setValues(values);
-          } catch (err) {
-            error = true;
-          }
-
-        };
-
-      });
+      } catch (err) {
+        error = true;
+      }
 
     };
 

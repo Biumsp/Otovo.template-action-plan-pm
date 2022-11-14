@@ -1,7 +1,8 @@
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('Update')
-      .addItem('Pull', 'pull')
+      .addItem('Sync', 'sync')
       .addItem('Update red-dates', 'updateAllDropdowns')
+      .addItem('Count Free Dates', 'freeDates')
       .addToUi();
 }

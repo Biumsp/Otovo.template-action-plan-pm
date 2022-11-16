@@ -2,8 +2,10 @@ function freeDates() {
 
   let ss = SpreadsheetApp.getActiveSpreadsheet();
   let calendarSheet = ss.getSheetByName("calendar_installers");
-  let projectsSheet = ss.getSheetByName("main");
+
   let allInstallersDates = getAllInstallersDates(calendarSheet.getDataRange().getValues());
+  let installers = ss.getRangeByName("dropdown_keys").getValues();
+  let datesRange = ss.getRangeByName("dropdown_dates");
 
   let values = calendarSheet.getDataRange().getValues();
   values.shift();
@@ -16,9 +18,9 @@ function freeDates() {
     let installer = rowValues[0];
     if (!installer) continue;
 
-    let ifd = installerFreeDates(installer, allInstallerDates, installers, dates)
+    let ifd = installerFreeDates(installer, allInstallersDates, installers, datesRange.getValues())
 
-    ifd.availableDates.forEach(d => {
+    ifd.forEach(d => {
       freeDatesList.push([installer, d]);
     })
 

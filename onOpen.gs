@@ -5,4 +5,6 @@ function onOpen() {
       .addItem('Update red-dates', 'updateAllDropdowns')
       .addItem('Count Free Dates', 'freeDates')
       .addToUi();
+
+  updateAllDropdowns();
 }

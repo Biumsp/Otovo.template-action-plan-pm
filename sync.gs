@@ -3,7 +3,7 @@ function sync() {
   var ui = SpreadsheetApp.getUi();
 
   if (userEmail !== "enricobu@otovo.com") {
-    ui.alert("You are not authorized to pull");
+    ui.alert("You are not authorized to sync");
     return;
   }
 
@@ -14,41 +14,54 @@ function sync() {
 
   if (result == ui.Button.YES) {
     localBackup();
-    updateAllData();
+    syncAll();
   } else {
     ui.alert('Ok', 'fine', ui.ButtonSet.OK);
   }
 }
 
-function updateAllData() {
-  /*
-     Copies the values from all the ranges named "from.name" to the corresponding
-     ranges "to.name"
-  */
+function syncAll() {
 
   let ss = SpreadsheetApp.getActiveSpreadsheet();
-  let ranges = ss.getNamedRanges();
-  
+  let sheets = ss.getSheets();
+
   let error;
-  ranges.forEach(inputRange => {
-    let name = inputRange.getName();
+  try {
+    sheets.forEach(s => {
+
+      let sourceName = s.getName();
+      if (!sourceName.endsWith(".export")) return;
+      
+      let destinationName = sourceName.slice(0, sourceName.length - ".export".length);
+      console.log("Updating sheet", destinationName);
+
+      let sourceValues = s.getDataRange().getValues();
+      let destinationSheet = ss.getSheetByName(destinationName);
+      let oldValues = destinationSheet.getDataRange().getValues();
+
+      let sourceHeaders = sourceValues.shift();
+      let destinationHeaders = oldValues.shift();
+
+      for (let i = 0; i < destinationHeaders.length; i++) {
+
+        let column = sourceHeaders.indexOf(destinationHeaders[i]);
+        if (column === -1) continue;
     
-    if (name.startsWith("from.")) {
-      name = name.slice("from.".length);
+        console.log("Updating column", destinationHeaders[i]);
+        let newCol = [];
+        for (row of sourceValues) {
+          newCol.push([row[column]]);
+        }
 
-      try {
+        destinationSheet.getRange(2, i+1, newCol.length).setValues(newCol);
+        console.log("Updated");
+        
+      } 
+    });
 
-        let outputRange = ss.getRangeByName("to." + name);
-        console.log("Copy values from", name);
-        outputRange.setValues(inputRange.getRange().getValues());
-
-      } catch (err) {
-        error = true;
-      }
-
-    };
-
-  });
+  } catch (err) {
+    error = true;
+  }
 
   if (error) {
 
@@ -60,8 +73,7 @@ function updateAllData() {
 
     let body = `Hi Enrico, 
 it's me, the version of you from the past who taught this was a good idea.
-We have an error in updateAllData, probably a range-length error.
-I know for sure that ${userName} solved the problem, but maybe you should check, just in case ;)
+We have an error in syncAll. I know for sure that ${userName} solved the problem, but maybe you should check, just in case ;)
 Have fun,
 
 Enrico
@@ -73,7 +85,6 @@ spreadsheet: ${ss.getUrl()}`;
     else GmailApp.sendEmail("enricobu@otovo.com", `Error in ${ss.getName()}`, body); 
 
   } else {
-    record("last_pull");
     updateAllDropdowns();
   }
 

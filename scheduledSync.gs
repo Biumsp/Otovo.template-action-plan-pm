@@ -1,4 +1,4 @@
-function scheduledSync() {
+/* function scheduledSync() {
 
   let lastEdit = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("last_edit").getValue();
   let lastPush = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("last_push").getValues();
@@ -12,4 +12,11 @@ function scheduledSync() {
   }
   
   updateAllData();
-}
+} */
+
+function scheduledExecution() {
+  localBackup();
+  syncAll();
+  updateAllDropdowns();
+  freeDates();
+} 

@@ -53,8 +53,10 @@ function syncAll() {
           newCol.push([row[column]]);
         }
 
+        destinationSheet.getRange(2, i+1, oldValues.length).clearContent();
+        //SpreadsheetApp.flush();
         destinationSheet.getRange(2, i+1, newCol.length).setValues(newCol);
-        console.log("Updated");
+        console.log("Updated");;
         
       } 
     });

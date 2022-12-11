@@ -54,14 +54,17 @@ function syncAll() {
         }
 
         destinationSheet.getRange(2, i+1, oldValues.length).clearContent();
-        //SpreadsheetApp.flush();
-        destinationSheet.getRange(2, i+1, newCol.length).setValues(newCol);
-        console.log("Updated");;
-        
+        if (newCol.length !== 0) {
+          destinationSheet.getRange(2, i+1, newCol.length).setValues(newCol);
+          console.log("Updated");
+        } else {
+          console.log("Skipped");
+        }
       } 
     });
 
   } catch (err) {
+    throw err;
     error = true;
   }
 

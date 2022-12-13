@@ -53,7 +53,7 @@ function syncAll() {
           newCol.push([row[column]]);
         }
 
-        if (oldValues.length > newCol.length) {
+        if (oldValues.length > newCol.length && oldValues.length !== 0) {
           destinationSheet.getRange(2, i+1, oldValues.length).clearContent();
         }
         if (newCol.length !== 0) {
